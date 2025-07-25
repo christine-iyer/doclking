@@ -1,8 +1,4 @@
-"""
-Docling: A tool for linguistic data processing and analysis.
 
-This script serves as the entry point for the Docling project.
-"""
 
 import sys
 import re
@@ -64,49 +60,27 @@ def generate_markov_text(text, length=50):
     
     return ' '.join(generated)
 
-def count_syllables_debug(word):
+def count_syllables(word):
     """
-    Debug version to see what's happening.
+    Estimate syllable count (simple heuristic).
     """
-    original_word = word
-    word = word.lower().strip()
-    word = re.sub(r'[^a-z]', '', word)
-    
+    word = word.lower()
     vowels = "aeiouy"
     syllable_count = 0
     prev_was_vowel = False
-    vowel_groups = []
     
-    for i, char in enumerate(word):
+    for char in word:
         is_vowel = char in vowels
         if is_vowel and not prev_was_vowel:
             syllable_count += 1
-            vowel_groups.append(char)
-        elif is_vowel and prev_was_vowel:
-            # Check for diphthongs vs separate vowels
-            prev_char = vowel_groups[-1][-1] if vowel_groups else ''
-            
-            # Common diphthongs that stay together: ai, au, ea, ee, ei, ie, oa, oo, ou, ue
-            diphthongs = ['ai', 'au', 'ea', 'ee', 'ei', 'ie', 'oa', 'oo', 'ou', 'ue']
-            current_pair = prev_char + char
-            
-            if current_pair in diphthongs:
-                vowel_groups[-1] += char
-            else:
-                # Separate vowel sounds (like "ua" in gargantuan)
-                syllable_count += 1
-                vowel_groups.append(char)
         prev_was_vowel = is_vowel
-    
-    print(f"   DEBUG '{original_word}': vowel groups = {vowel_groups}, initial count = {syllable_count}")
     
     # Handle silent 'e'
     if word.endswith('e') and syllable_count > 1:
-        if len(word) > 1 and word[-2] not in vowels:
-            syllable_count -= 1
-            print(f"   DEBUG: Reduced for silent 'e', new count = {syllable_count}")
+        syllable_count -= 1
     
     return max(1, syllable_count)
+
 def find_rhymes(word, word_list):
     """
     Find potential rhymes (simple ending match).
@@ -146,9 +120,9 @@ def main():
     print(f"   {generated}")
     
     print(f"\n🎵 Syllable counter demo:")
-    test_words = ["gargantuan", "improbable", "stupendous", "linguistic", "extraordinary", "syllable", "cat", "dog", "table", "simple"]
+    test_words = ["gargantuan", "improbable", "stupendous", "linguistic", "extraordinary"]
     for word in test_words:
-        syllables = count_syllables_debug(word)
+        syllables = count_syllables(word)
         print(f"   '{word}': {syllables} syllables")
     
     print(f"\n🎯 Rhyme finder demo (words that rhyme with 'cat'):")
