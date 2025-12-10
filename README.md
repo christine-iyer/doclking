@@ -1,0 +1,1 @@
+I decided it's time to revisit docling. This time to parse financial documents. So tomorrow I'll pull up one of mine from Vanguard and chose a piece to extract. 
